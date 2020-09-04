@@ -7,7 +7,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { Invoice } from 'Invoice.service';
+import { Invoice } from 'src/app/Invoice.service';
 import { FormGroup, FormBuilder, Validators, FormArray, FormControl} from '@angular/forms';
 import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
