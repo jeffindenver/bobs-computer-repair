@@ -1,0 +1,54 @@
+<mat-card class="center">
+  <mat-card-content>
+    <div fxLayout="column center" fxLayoutGap="40px">
+      <h2 class="center-text" fxFlex>Services</h2>
+      <div class="order-form center" fxFlex>
+        <div fxLayout="row">
+          <form [formGroup]="orderForm">
+            <div fxFlex>
+              <table class="order-table">
+                <tr>
+                  <th></th>
+                  <th class="left-text">Service</th>
+                  <th class="left-text">Price</th>
+                </tr>
+                <ng-container *ngFor="let item of data">
+                  <tr>
+                    <td>
+                      <mat-checkbox [value]="item.price" [name]="item.name" (change)="onCheckboxChange($event)"></mat-checkbox>
+                    </td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.price | currency }}</td>
+                  </tr>
+                </ng-container>
+              </table>
+            </div>
+            <div class="parts-labor" fxFlex>
+              <form [formGroup]="manualEntryForm" (ngSubmit)="addPartsLabor({parts: parts.value, labor: labor.value})">
+                <mat-form-field>
+                  <mat-label appearance="fill">Parts cost: </mat-label>
+                  <input #parts type="number" matInput formControlName="partsCost">
+                </mat-form-field>
+                <br>
+                <mat-form-field>
+                  <mat-label appearance="fill">Labor cost: </mat-label>
+                  <input #labor type="number" matInput formControlName="laborCost">
+                  <mat-hint>@ $50.00 / hour</mat-hint>
+                </mat-form-field>
+                <button mat-raised-button color="accent" style="margin-top: 20px">Add Parts & Labor</button>
+              </form>
+            </div>
+          </form>
+        </div>
+      </div>
+      <section fxLayout="row wrap" fxLayoutGap="10px" fxFlex>
+        <div class="parts-labor-total center-text" fxFlex>Parts & Labor: {{ getPartsLaborTotal() | currency }}</div>
+        <div class="order-total center-text" fxFlex>Total {{ getTotal() | currency }}</div>
+        <button mat-raised-button color="accent" fxFlex (click)="showInvoice()">Submit</button>
+      </section>
+
+    </div>
+  </mat-card-content>
+
+
+</mat-card>

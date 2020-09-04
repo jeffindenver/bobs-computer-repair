@@ -1,4 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #301121;
+}
+
+h1 {
+  font-size: 60px;
+}
+
+table {
+  width: 300px;
+}
+
+.banner {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px #8e2c67;
+  font-style: italic;
+}
+
+.center {
+  margin: auto;
+  width: 80%;
+}
+
+.left-text {
+  text-align: left;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.order-form {
+  padding: 10px;
+}
+
+.order-total,
+.parts-labor-total {
+  align-items: center;
+  height: 60px;
+  width: 180px;
+  padding-top: 20px;
+  background-color: rgba(241, 23, 248, 0.05);
+}
