@@ -6,7 +6,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #301121;
+  background-color: #b3acaf;
 }
 
 h1 {
@@ -19,8 +19,9 @@ table {
 
 .banner {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: lightgrey;
   letter-spacing: 4px;
-  text-shadow: 2px 2px #8e2c67;
+  text-shadow: 3px 3px #a33577;
   font-style: italic;
 }
 

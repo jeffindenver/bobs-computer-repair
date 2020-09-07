@@ -7,7 +7,7 @@
 */
 
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+//import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +18,6 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class AppComponent {
   title = 'bobs-computer-repair';
 
-  constructor(private fb: FormBuilder) {}
+  constructor() {}
 
 }

@@ -6,8 +6,10 @@
  * Description: Invoice class
  */
 
-import { IInvoiceItem } from './invoiceItem.interface';
-import { Injectable, Input } from '@angular/core';
+//this class should either be refactored out or used to take functionality from
+//the order component
+
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -23,37 +25,9 @@ export class Invoice {
   private partsCost: number;
   private total: number;
 
-  @Input() itemList: Array<IInvoiceItem> = [
-    {name: "Password Reset", price: 39.99, isChecked: false},
-    {name: "Spyware Removal", price: 99.99, isChecked: false},
-    {name: "RAM Upgrade", price: 129.99, isChecked: false},
-    {name: "Software Installation", price: 49.99, isChecked: false},
-    {name: "Tune-up", price: 89.99, isChecked: false},
-    {name: "Keyboard Cleaning", price: 45.00, isChecked: false},
-    {name: "Disk Cleanup", price: 149.99, isChecked: false}
-  ];
-
   constructor () {
     this.invoiceId = Invoice.ID;
     Invoice.ID++;
-  }
-
-  private calculateTotal() {
-    let total = 0.0;
-
-    let orderedItems = this.itemList.filter(item => {
-      item.isChecked === true;
-    });
-
-    orderedItems.forEach(item => {
-      total = total + item.price;
-    })
-    return total;
-  }
-
-  getTotal() {
-    this.calculateTotal();
-    return this.total;
   }
 
   setInvoiceId(id) {

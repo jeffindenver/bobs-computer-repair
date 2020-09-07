@@ -6,11 +6,16 @@
  * Description: order component
  */
 
-import { Component, OnInit } from '@angular/core';
-import { Invoice } from 'src/app/Invoice.service';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl} from '@angular/forms';
-import { InvoiceDialogComponent } from '../invoice-dialog/invoice-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import {Component, OnInit, Input, Output} from '@angular/core';
+import {Invoice} from 'src/app/Invoice.service';
+import {IRepairService} from '../repairService.interface';
+import {InvoiceDialogComponent} from '../invoice-dialog/invoice-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
+import {FormGroup,
+        FormBuilder,
+        Validators,
+        FormArray,
+        FormControl } from '@angular/forms';
 
 
 @Component({
@@ -21,46 +26,112 @@ import { MatDialog } from '@angular/material/dialog';
 
 export class OrderComponent implements OnInit {
 
-  private total: number = 0.0;
-  private partsLaborTotal: number = 0.0;
-  orderForm: FormGroup;
+  total: number = 0.0;
+  partsLaborTotal: number = 0.0;
+  services: Array<IRepairService>;
+  selectedServices: Array<IRepairService>;
+  serviceRepairForm: FormGroup;
   manualEntryForm: FormGroup;
+  serviceRepairOptions: FormArray;
+  servicesFormArray: FormArray;
   invoice: Invoice = new Invoice();
 
-  data = this.invoice.itemList;
+  constructor(private fb: FormBuilder, private dialog: MatDialog) { }
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {
-    this.orderForm = this.fb.group({
-      checkArray: this.fb.array([])
-    });
+  ngOnInit(): void {
     let numberPattern = "[+-]?([0-9]*[.])?[0-9]+";
-    this.manualEntryForm = this.fb.group({
-      laborCost: new FormControl('', Validators.pattern(numberPattern)),
-      partsCost: new FormControl('', Validators.pattern(numberPattern))
-    });
-   }
 
-   addPartsLabor(e) {
+    this.serviceRepairForm = this.fb.group({
+      serviceRepairOptions: new FormArray([]),
+      laborCost: new FormControl('', Validators.pattern(numberPattern)),
+      partsCost: new FormControl('', Validators.pattern(numberPattern)),
+      partsAndLaborCost: new FormControl(''),
+      totalCost: new FormControl('')
+    });
+
+    this.services = [
+      {id: 0, name: "Password Reset", price: 39.99, isChecked: false},
+      {id: 1, name: "Spyware Removal", price: 99.99, isChecked: false},
+      {id: 2, name: "RAM Upgrade", price: 129.99, isChecked: false},
+      {id: 3, name: "Software Installation", price: 49.99, isChecked: false},
+      {id: 4, name: "Tune-up", price: 89.99, isChecked: false},
+      {id: 5, name: "Keyboard Cleaning", price: 45.00, isChecked: false},
+      {id: 6, name: "Disk Cleanup", price: 149.99, isChecked: false}
+    ];
+
+    this.servicesFormArray = this.serviceRepairForm.controls.serviceRepairOptions as FormArray;
+    this.addServiceRepairCheckboxes();
+  }
+
+  private addServiceRepairCheckboxes(): void {
+    this.services.forEach(() => this.servicesFormArray.push(new FormControl(false)));
+  }
+
+  onCheckboxChange(e) {
+    console.log("source check box");
+    console.log(e);
+    if (e.checked) {
+      this.total = this.total + e.source.value;
+    } else {
+      this.total = this.total - e.source.value;
+    }
+  }
+
+  showInvoice() {
+    this.selectedServices = this.serviceRepairForm.value.serviceRepairOptions
+      .map((checked, index) => checked ? this.services[index] : null)
+      .filter(v => v !== null);
+
+    console.log(this.selectedServices);
+
+    const dialogRef = this.dialog.open(InvoiceDialogComponent,
+      {data: {invoiceId: this.invoice.getInvoiceId(),
+              partsAndLabor: this.getPartsLaborTotal(),
+              list: this.selectedServices,
+              total: this.getTotal()},
+        disableClose: true,
+        width: "600px" });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === "confirm") {
+        this.invoice = new Invoice();
+      }
+    });
+
+    this.clearForm();
+  }
+
+  clearForm() {
+    this.invoice.setLaborCost(0.0);
+    this.invoice.setPartsCost(0.0);
+    this.total = 0;
+    this.servicesFormArray.controls.forEach(item => {
+      item.setValue(false);
+    });
+    this.serviceRepairForm.controls.laborCost.setValue("");
+    this.serviceRepairForm.controls.partsCost.setValue("");
+    let e = {labor: 0.0, parts: 0.0};
+    this.addPartsLabor(e);
+  }
+
+  addPartsLabor(e) {
     if (e) {
       this.invoice.setLaborCost(parseFloat(e.labor));
       this.invoice.setPartsCost(parseFloat(e.parts));
       this.partsLaborTotal = this.invoice.getPartsAndLaborCost();
     }
-   }
-
-   onCheckboxChange(e) {
-    let lineItem = this.data.find(item => item.name === e.source.name);
-    if (e.checked) {
-      lineItem.isChecked = true;
-      this.total = this.total + e.source.value;
-    } else {
-      lineItem.isChecked = false;
-      this.total = this.total - e.source.value;
-    }
   }
 
   getInvoice() {
     return this.invoice;
+  }
+
+  getPartsCost() {
+    return this.invoice.getPartsCost();
+  }
+
+  getLaborCost() {
+    return this.invoice.getLaborCost();
   }
 
   getPartsLaborTotal() {
@@ -69,43 +140,6 @@ export class OrderComponent implements OnInit {
 
   getTotal() {
     return this.total + this.partsLaborTotal;
-  }
-
-  clearInvoice() {
-    this.invoice = new Invoice();
-  }
-
-  get form() {
-    return this.orderForm.controls;
-  }
-
-  showInvoice() {
-    let l_items = [];
-    this.data.forEach( item => {
-      if(item.isChecked) {
-        l_items.push(item);
-      }
-    });
-    console.log(l_items);
-
-    const dialogRef = this.dialog.open(InvoiceDialogComponent,
-      {data: {invoiceId: this.invoice.getInvoiceId(),
-              partsAndLabor: this.getPartsLaborTotal(),
-              list: l_items,
-              total: this.getTotal()},
-        disableClose: true,
-        width: "600px" });
-    console.log("Parts and Labor:");
-    console.log(this.getPartsLaborTotal());
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === "confirm") {
-        this.invoice = new Invoice();
-      }
-    });
-  }
-
-  ngOnInit(): void {
   }
 
 }
