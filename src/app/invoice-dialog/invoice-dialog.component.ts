@@ -22,7 +22,7 @@ export class InvoiceDialogComponent implements OnInit {
   partsAndLabor;
 
   constructor(private dialogRef: MatDialogRef<InvoiceDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) data) {
+              @Inject(MAT_DIALOG_DATA) data) {
       this.invoiceId = data.invoiceId;
       this.list = data.list;
       this.total = data.total;

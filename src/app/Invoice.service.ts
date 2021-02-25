@@ -6,8 +6,8 @@
  * Description: Invoice class
  */
 
-//this class should either be refactored out or used to take functionality from
-//the order component
+// this class should either be refactored out or used to take functionality from
+// the order component
 
 import { Injectable } from '@angular/core';
 
@@ -16,25 +16,20 @@ import { Injectable } from '@angular/core';
 })
 
 export class Invoice {
-  //the class ID is a way to get unique IDs during a single run of the program.
-  //It should be replaced with some other means, perhaps with the database
-  private static ID: number = 1000;
+  // the class ID is a way to get unique IDs during a single run of the program.
+  // It should be replaced with some other means, perhaps with the database
+  private static ID = 1000;
 
-  private invoiceId: number;
+  readonly invoiceId: number;
   private laborCost: number;
   private partsCost: number;
-  private total: number;
 
-  constructor () {
+  constructor() {
     this.invoiceId = Invoice.ID;
     Invoice.ID++;
   }
 
-  setInvoiceId(id) {
-    this.invoiceId = id;
-  }
-
-  setPartsCost(amount) {
+  setPartsCost(amount: number): void {
     if (!amount) {
       this.partsCost = 0.0;
     } else {
@@ -42,7 +37,7 @@ export class Invoice {
     }
   }
 
-  setLaborCost(amount) {
+  setLaborCost(amount: number): void {
     if (!amount) {
       this.laborCost = 0.0;
     } else {
@@ -50,19 +45,19 @@ export class Invoice {
     }
   }
 
-  getPartsAndLaborCost(){
+  getPartsAndLaborCost(): number {
     return this.partsCost + this.laborCost;
   }
 
-  getInvoiceId() {
+  getInvoiceId(): number {
     return this.invoiceId;
   }
 
-  getLaborCost() {
+  getLaborCost(): number {
     return this.laborCost;
   }
 
-  getPartsCost() {
+  getPartsCost(): number {
     return this.partsCost;
   }
 
